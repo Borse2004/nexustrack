@@ -8,10 +8,13 @@ app = FastAPI(
     description="Backend for the Game Achievement & Completion Tracker",
     version="1.0.0"
 )
-
+origins = [
+    "http://localhost:3000",
+    "https://nexustrack-api-1hm2.onrender.com", # Replace this with YOUR actual Vercel URL
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], 
+    allow_origins=["http://localhost:3000",], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
