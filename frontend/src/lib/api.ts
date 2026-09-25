@@ -1,12 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  // This tells Next.js to use the live URL in production, but localhost on your computer
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
 });
 
 api.interceptors.request.use((config) => {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  if (token && config.headers) {
+  const token = localStorage.getItem("token");
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
