@@ -18,7 +18,7 @@ export default function SignUp() {
 
     try {
       // Hits the user creation route in your FastAPI backend
-      await api.post("/api/users/", {
+      await api.post("/api/users", {
         email: email,
         password: password,
       });
