@@ -1,10 +1,11 @@
- "use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../lib/api";
 
 export default function SignUp() {
+  const [username, setUsername] = useState(""); // ADDED: Username state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,8 +18,9 @@ export default function SignUp() {
     setLoading(true);
 
     try {
-      // Hits the user creation route in your FastAPI backend
-      await api.post("/api/users/", {
+      // UPDATED: The exact route required by your backend
+      await api.post("/api/users/register", {
+        username: username,
         email: email,
         password: password,
       });
@@ -26,7 +28,7 @@ export default function SignUp() {
       // Redirects to login upon successful creation
       router.push("/login?registered=true");
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Failed to create account. Email might already exist.");
+      setError(err.response?.data?.detail || "Failed to create account. Username or email might already exist.");
     } finally {
       setLoading(false);
     }
@@ -45,6 +47,17 @@ export default function SignUp() {
         )}
 
         <form onSubmit={handleSignUp} className="space-y-4">
+          {/* ADDED: Username Input */}
+          <div>
+            <label className="block text-gray-300 text-sm font-bold mb-2">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full p-3 rounded bg-gray-700 text-white border border-gray-600 focus:border-blue-500 focus:outline-none"
+              required
+            />
+          </div>
           <div>
             <label className="block text-gray-300 text-sm font-bold mb-2">Email</label>
             <input
