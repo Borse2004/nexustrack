@@ -21,7 +21,8 @@ export default function SearchGames() {
     
     setLoading(true);
     try {
-      const response = await api.get(`/games/search?query=${query}`);
+      // UPDATED: Added /api prefix to the search route
+      const response = await api.get(`/api/games/search?query=${query}`);
       setResults(response.data);
     } catch (error) {
       console.error("Search failed:", error);
@@ -34,7 +35,8 @@ export default function SearchGames() {
   const handleSaveGame = async (game: any) => {
     setSaving(game.rawg_id);
     try {
-      await api.post("/games/", {
+      // UPDATED: Added /api prefix to the save route
+      await api.post("/api/games/", {
         title: game.title,
         // If a game has multiple platforms, we'll just grab the first one for simplicity
         platform: game.platforms.length > 0 ? game.platforms[0] : "Unknown", 

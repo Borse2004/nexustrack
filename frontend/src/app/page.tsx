@@ -9,14 +9,13 @@ export default function Home() {
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // This automatically runs when the page loads
   useEffect(() => {
-    if (!token) return; // If not logged in, do nothing
+    if (!token) return;
 
     const fetchGames = async () => {
       try {
-        // Because of our interceptor, this securely fetches ONLY your games
-        const response = await api.get("/games/");
+        // UPDATED: Added /api prefix
+        const response = await api.get("/api/games/");
         setGames(response.data);
       } catch (error) {
         console.error("Failed to fetch games");
@@ -29,12 +28,11 @@ export default function Home() {
   }, [token]);
   
   const handleDelete = async (gameId: string) => {
-    // Add a quick safety check so users don't accidentally delete games
     if (!window.confirm("Are you sure you want to remove this game?")) return;
     
     try {
-      await api.delete(`/games/${gameId}`);
-      // Instantly remove the game from the screen without refreshing the page
+      // UPDATED: Added /api prefix
+      await api.delete(`/api/games/${gameId}`);
       setGames(games.filter((game: any) => game.id !== gameId));
     } catch (error) {
       console.error("Failed to delete game:", error);
@@ -43,10 +41,9 @@ export default function Home() {
 
   const handleStatusChange = async (gameId: string, newStatus: string) => {
     try {
-      // Send the new status to the backend
-      await api.put(`/games/${gameId}`, { status: newStatus });
+      // UPDATED: Added /api prefix
+      await api.put(`/api/games/${gameId}`, { status: newStatus });
       
-      // Update the screen instantly without refreshing
       setGames(games.map((game: any) => 
         game.id === gameId ? { ...game, status: newStatus } : game
       ));
@@ -55,7 +52,6 @@ export default function Home() {
     }
   };
 
-  // View 1: What users see when they are NOT logged in
   if (!token) {
     return (
       <main className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-8">
@@ -68,10 +64,8 @@ export default function Home() {
     );
   }
 
-  // View 2: What users see WHEN logged in (The Dashboard)
   return (
     <main className="min-h-screen bg-gray-900 text-white p-8">
-      {/* Header section */}
       <div className="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
         <h1 className="text-3xl font-bold text-blue-500">My Library</h1>
         <div className="flex gap-4">
@@ -87,7 +81,6 @@ export default function Home() {
         </div>
       </div>
       
-      {/* Games section */}
       {loading ? (
         <p className="text-gray-400">Loading your library...</p>
       ) : games.length === 0 ? (
@@ -97,7 +90,6 @@ export default function Home() {
           {games.map((game: any) => (
             <div key={game.id} className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 overflow-hidden flex flex-col">
               
-              {/* Render image if it exists, otherwise a placeholder box */}
               {game.cover_image ? (
                 <img src={game.cover_image} alt={game.title} className="w-full h-48 object-cover" />
               ) : (
@@ -106,14 +98,12 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Updated Card Footer with Delete Button */}
               <div className="p-6 flex flex-col justify-between flex-1">
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-white">{game.title}</h2>
                   <p className="text-gray-400 mb-4">Platform: <span className="text-gray-200">{game.platform}</span></p>
                 </div>
                 
-                {/* Status Dropdown & Delete Button row */}
                 <div className="flex justify-between items-center mt-4 border-t border-gray-700 pt-4">
                   <select 
                     value={game.status}
